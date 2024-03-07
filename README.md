@@ -373,3 +373,95 @@ Deploy the tooling website's code to the Webserver. Ensure that the html folder 
  sudo cp -r html/. /var/www/html
  ```
 
+.Deploy the tooling website’s code to the Webserver. Ensure that the html folder from the repository is deployed to /var/www/html
+ 
+```bash
+sudo yum install git -y
+```
+
+
+Do not forget to open TCP port 80 on the Web Server.
+
+![results](./Image/SG.png)
+
+If you encounter 403 Error – check permissions to your /var/www/html folder and also disable `SELinux sudo setenforce 0`
+To make this change permanent – open following config file 
+
+```bash
+sudo vi /etc/sysconfig/selinux
+```
+
+and set **SELINUX=disabled,** then restart httpd;
+
+```bash
+sudo systemctl start httpd
+sudo systemctl status httpd
+```
+![results](./Image/apache.png)
+
+6. Update the website’s configuration to connect to the database (in **/var/www/html/functions.php** file).
+
+![results](./Image/php.png)
+ 
+edit the database private ip address, database username and database name. save and quit
+
+ 7. Apply tooling-db.sql script to your database using this command
+   
+```bash
+mysql -h <databse-private-ip> -u <db-username> -p <db-pasword> < tooling-db.sql
+```
+
+To do this, you have to follow the following steps:
+
+- Install mysql on web server
+  
+```bash
+sudo yum install mysql -y
+```
+
+- Open port 3306 on database server
+  
+!
+
+- You'd also need to configure MySQL server to allow connections from remote hosts.
+  
+```bash
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+
+
+- Restart mysql
+  ```
+  sudo systemctl restart mysql
+  sudo systemctl status mysql
+  ```
+![results](./Image/SQL.png)
+
+- From the webserver, apply tooling-db.sql script to your database 
+
+```bash
+mysql -h <databse-private-ip> -u <db-username> -p <dbname> < tooling-db.sql
+```
+
+8. If it returns no error, create in MySQL a new admin user with username: myuser 
+ 
+![results](./Image/DB_1.png)
+![results](./Image/DB_2.png)
+
+9. Open the website in your browser http://Web-Server-Public-IP-Address-or-Public-DNS-Name/index.php and make sure you can login into the website with myuser user.
+    
+![results](./Image/page.png)
+
+ I will be logging in using user name "admin" and corresponding password
+
+![results](./Image/tools.png)
+
+### Congratulations!
+
+![results](./Image/congrats.png)
+
+**You have just implemented a web solution for a DevOps team using LAMP stack with remote Database and NFS servers.**
+
+
+new 
